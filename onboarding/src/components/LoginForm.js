@@ -48,8 +48,22 @@ const FormikLoginForm = withFormik({
         //     .boolean().oneOf([true], 'You must accept ToS to continue.')
     }),
 
-    handleSubmit(values) {
-        console.log(values)
+    handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
+        if (values.email === 'waffle@syrup.com') {
+            setErrors({email: 'That email is already taken.'})
+        } else {
+            axios
+            .post('https://reqres.in/api/users', values)
+            .then(res => {
+                console.log(res)
+                resetForm()
+                setSubmitting(false)
+            })
+            .catch(err => {
+                console.log(err)
+                setSubmitting(false)
+            });
+        }
     }
 })(LoginForm)
 
