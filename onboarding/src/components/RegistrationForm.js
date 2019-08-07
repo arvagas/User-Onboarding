@@ -1,17 +1,26 @@
-import React from 'react'
-
+import React, { useState, useEffect } from 'react'
 import { withFormik, Form, Field } from 'formik'
 import * as yup from 'yup'
 import axios from 'axios'
 
-import './RegistrationForm.css'
-import { Box, Divider, Typography } from '@material-ui/core'
+import UserDisplay from './UserDisplay'
 
-function RegistrationForm({ values, errors, touched }) {
+import './RegistrationForm.css'
+import { Box, Divider, Typography, Grid } from '@material-ui/core'
+
+function RegistrationForm({ values, errors, touched, status }) {
+    const [users, setUsers] = useState([])
+
+    useEffect(()=> {
+        if (status) {
+            setUsers(users => [...users, status])
+        }
+    }, [status])
+
     return (
-        <Box border={1} maxWidth='300px' width='100%' p={2} m={3}>
-            <Form>
-                <Box display='flex' flexDirection='column' justifyContent='space-between'>
+        <div className='split-sides'>
+            <Box border={1} maxWidth='300px' width='100%' p={2} mr={2}>
+                <Form className='form-styles'>
                     <h2 style={{textAlign:'center', marginTop:'0'}}>Registration</h2>
 
                     <Field type='text' name='name' placeholder='Name'/>
@@ -32,7 +41,7 @@ function RegistrationForm({ values, errors, touched }) {
                     </Field>
                     {touched.role && errors.role && <p className='err'>{errors.role}</p>}
 
-                    <Box>
+                    <Box mt={2}>
                         <Divider/> 
                         <Typography color='textSecondary' variant='caption'>Optional Information</Typography>
                     </Box>
@@ -46,7 +55,9 @@ function RegistrationForm({ values, errors, touched }) {
                     <Field type='text' name='ssn' placeholder='Social Security Number' style={{marginTop:'1rem'}}/>
                     {touched.ssn && errors.ssn && <p className='err'>{errors.ssn}</p>}
 
-                    <Divider/>
+                    <Box mt={2}>
+                        <Divider/>
+                    </Box>
 
                     <label>
                         <Field type='checkbox' name='tos' checked={values.tos} style={{marginTop:'1rem'}}/>
@@ -55,9 +66,15 @@ function RegistrationForm({ values, errors, touched }) {
                     {touched.tos && errors.tos && <p className='err'>{errors.tos}</p>}
 
                     <button type='submit' style={{marginTop:'1rem'}}>Submit</button>
-                </Box>
-            </Form>
-        </Box>
+                </Form>
+            </Box>
+
+            <Grid container direction='row'>
+                {users.map(user => (
+                    <UserDisplay key={user.id} user={user}/>
+                ))}
+            </Grid>
+        </div>
     )
 }
 
@@ -104,7 +121,7 @@ const FormikRegistrationForm = withFormik({
             .oneOf([true], '*Accept Terms of Service to continue.')
     }),
 
-    handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
+    handleSubmit(values, { resetForm, setErrors, setSubmitting, setStatus }) {
         if (values.email === 'waffle@syrup.com') {
             setErrors({email: '*That email is already taken.'})
         } else {
@@ -112,6 +129,7 @@ const FormikRegistrationForm = withFormik({
             .post('https://reqres.in/api/users', values)
             .then(res => {
                 console.log(res)
+                setStatus(res.data)
                 resetForm()
                 setSubmitting(false)
             })
