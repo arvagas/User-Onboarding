@@ -1,12 +1,14 @@
 import React from 'react'
 
-import FormikLoginForm from './components/LoginForm'
+import FormikRegistrationForm from './components/RegistrationForm'
+
+import { Box } from '@material-ui/core'
 
 function App() {
   return (
-    <div>
-      <FormikLoginForm/>
-    </div>
+    <Box display='flex' flexDirection='column' alignItems='center'>
+      <FormikRegistrationForm/>
+    </Box>
   )
 }
 
