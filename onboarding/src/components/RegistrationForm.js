@@ -5,11 +5,11 @@ import * as yup from 'yup'
 import axios from 'axios'
 
 import './RegistrationForm.css'
-import { Box } from '@material-ui/core'
+import { Box, Divider, Typography } from '@material-ui/core'
 
 function RegistrationForm({ values, errors, touched }) {
     return (
-        <Box border={1} maxWidth='300px' width='100%' height='350px' p={2} m={3}>
+        <Box border={1} maxWidth='300px' width='100%' p={2} m={3}>
             <Form>
                 <Box display='flex' flexDirection='column' justifyContent='space-between'>
                     <h2 style={{textAlign:'center', marginTop:'0'}}>Registration</h2>
@@ -32,6 +32,22 @@ function RegistrationForm({ values, errors, touched }) {
                     </Field>
                     {touched.role && errors.role && <p className='err'>{errors.role}</p>}
 
+                    <Box>
+                        <Divider/> 
+                        <Typography color='textSecondary' variant='caption'>Optional Information</Typography>
+                    </Box>
+
+                    <Field type='text' name='birth' placeholder='Birth: MM/DD/YYYY' style={{marginTop:'1rem'}}/>
+                    {touched.birth && errors.birth && <p className='err'>{errors.birth}</p>}
+
+                    <Field type='text' name='phone' placeholder='Phone Number' style={{marginTop:'1rem'}}/>
+                    {touched.phone && errors.phone && <p className='err'>{errors.phone}</p>}
+
+                    <Field type='text' name='ssn' placeholder='Social Security Number' style={{marginTop:'1rem'}}/>
+                    {touched.ssn && errors.ssn && <p className='err'>{errors.ssn}</p>}
+
+                    <Divider/>
+
                     <label>
                         <Field type='checkbox' name='tos' checked={values.tos} style={{marginTop:'1rem'}}/>
                         Accept Terms of Service
@@ -46,12 +62,15 @@ function RegistrationForm({ values, errors, touched }) {
 }
 
 const FormikRegistrationForm = withFormik({
-    mapPropsToValues({ name, email, password, role, tos }) {
+    mapPropsToValues({ name, email, password, role, birth, phone, ssn, tos }) {
         return {
             name: name || '',
             email: email || '',
             password: password || '',
             role: role || 'roleSelect',
+            birth: birth || '',
+            phone: phone || '',
+            ssn: ssn || '',
             tos: tos || false,
         }
     },
@@ -70,7 +89,16 @@ const FormikRegistrationForm = withFormik({
             .required('*Password is required'),
         role: yup
             .string()
-            .matches(/(Admin|Staff|Student|Guest)/, '*Role is required'),
+            .matches(/(Admin|Staff|Student|Guest)/, '*Role is required')
+            .required('*Role is required'),
+        birth: yup 
+            .date(),
+        phone: yup 
+            .string()
+            .length(10, '*Phone number invalid'),
+        ssn: yup 
+            .string()
+            .length(9, '*SSN invalid'),
         tos: yup
             .boolean()
             .oneOf([true], '*Accept Terms of Service to continue.')
