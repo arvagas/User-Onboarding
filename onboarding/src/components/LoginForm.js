@@ -14,6 +14,7 @@ function LoginForm({ values, errors, touched }) {
             {touched.password && errors.password && <p>{errors.password}</p>}
             <Field type='password' name='password' placeholder='Password' />
             <label>
+                {touched.tos && errors.tos && <p>{errors.tos}</p>}
                 <Field type='checkbox' name='tos' checked={values.tos} />
                 Accept TOS
             </label>
@@ -44,8 +45,9 @@ const FormikLoginForm = withFormik({
             .string()
             .min(6, 'Password must be 6 characters or longer')
             .required('Password is required'),
-        // tos: yup
-        //     .boolean().oneOf([true], 'You must accept ToS to continue.')
+        tos: yup
+            .boolean()
+            .oneOf([true], 'Accept ToS to continue.')
     }),
 
     handleSubmit(values, { resetForm, setErrors, setSubmitting }) {
