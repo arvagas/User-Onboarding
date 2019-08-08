@@ -1,0 +1,40 @@
+.split-sides{
+    display: flex;
+}
+
+.form-styles{
+    display:flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.err{
+    color: red;
+    font-size: 12px;
+    margin: 0;
+}
+
+.user-card{
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border: solid black 1px;
+    max-width: 300px;
+    width: 100%;
+    max-height: 150px;
+    padding: 10px;
+    margin: 1rem;
+}
+
+.user-name {
+    margin: 0;
+}
+
+.user-content{
+    display: flex;
+    flex-direction: column;
+}
+
+.user-content p {
+    margin: 0;
+}
